@@ -3,14 +3,14 @@
 #[allow(unused_variables)]
 use std::cmp::{max, min};
 
-use std::io::{stdin, stdout, BufWriter, Write};
 use aoc2023::UnsafeScanner;
+use std::io::{stdin, stdout, BufWriter, Write};
 
 pub fn main() {
     let mut scan = UnsafeScanner::new(stdin().lock());
     let mut out = BufWriter::new(stdout().lock());
 
-    let d = vec![
+    let d = [
         "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
     ];
 
