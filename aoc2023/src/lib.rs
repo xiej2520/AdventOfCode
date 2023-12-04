@@ -55,3 +55,79 @@ impl<R: BufRead> UnsafeScanner<R> {
         }
     }
 }
+
+pub struct BIT {
+    bit: Vec<i32>,
+}
+#[allow(dead_code)]
+impl BIT {
+    pub fn new(n: usize) -> Self {
+        BIT { bit: vec![0; n] }
+    }
+    pub fn sum(&self, mut r: i32) -> i32 {
+        assert!(r >= 0 && r < self.bit.len() as i32);
+        let mut res = 0;
+        while r >= 0 {
+            res += unsafe { self.bit.get_unchecked(r as usize) };
+            r = (r & (r + 1)) - 1;
+        }
+        res
+    }
+    pub fn add(&mut self, mut index: usize, delta: i32) {
+        assert!(index < self.bit.len());
+        while index < self.bit.len() {
+            unsafe {
+                *self.bit.get_unchecked_mut(index) += delta;
+            }
+            index |= index + 1;
+        }
+    }
+}
+
+pub struct SegTree {
+    s: Vec<i32>,
+    n: usize,
+}
+#[allow(dead_code)]
+impl SegTree {
+    pub fn new(n: usize) -> Self {
+        SegTree {
+            s: vec![0; 2 * n],
+            n,
+        }
+    }
+    pub fn update(&mut self, mut pos: usize, val: i32) {
+        assert!(pos < self.n);
+        unsafe {
+            pos += self.n;
+            *self.s.get_unchecked_mut(pos) = val;
+            pos >>= 1;
+            while pos != 0 {
+                *self.s.get_unchecked_mut(pos) =
+                    *self.s.get_unchecked(pos * 2) + *self.s.get_unchecked(pos * 2 + 1);
+
+                pos >>= 1;
+            }
+        }
+    }
+    pub fn query(&self, mut l: usize, mut r: usize) -> i32 {
+        assert!(l < self.n);
+        assert!(r < self.n);
+        let (mut ra, mut rb) = (0, 0);
+        l += self.n;
+        r += self.n + 1;
+        while l < r {
+            if l % 2 == 1 {
+                ra += unsafe { *self.s.get_unchecked(l) };
+                l += 1;
+            }
+            if r % 2 == 1 {
+                r -= 1;
+                rb += unsafe { *self.s.get_unchecked(r) };
+            }
+            l >>= 1;
+            r >>= 1;
+        }
+        ra + rb
+    }
+}
