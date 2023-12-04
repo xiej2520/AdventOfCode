@@ -17,7 +17,7 @@ pub fn main() {
     let (m, n) = (grid.len(), grid[0].len());
 
     let mut count = 0;
-    let mut numgrid: Vec<Vec<(i32, i32)>> = vec![vec![(-1, -1); n]; m];
+    let mut numgrid = vec![vec![(-1, -1); n]; m];
     for (i, line) in grid.iter_mut().enumerate() {
         unsafe {
             let line = line.as_bytes_mut();
