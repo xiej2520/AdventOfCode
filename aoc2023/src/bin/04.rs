@@ -3,7 +3,7 @@
 #[allow(unused_variables)]
 use std::cmp::{max, min};
 
-use aoc2023::UnsafeScanner;
+use aoc2023::{UnsafeScanner, BIT};
 use std::{
     error::Error,
     io::{stdin, stdout, BufWriter, Write},
@@ -13,7 +13,7 @@ pub fn main() -> Result<(), Box<dyn Error>> {
     let mut scan = UnsafeScanner::new(stdin().lock());
     let mut out = BufWriter::new(stdout().lock());
 
-    let mut bit = aoc2023::BIT::new(200);
+    let mut bit = BIT::new(200);
 
     let (mut res_1, mut res_2) = (0,0);
     let mut i = 1;
