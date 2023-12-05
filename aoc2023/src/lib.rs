@@ -110,6 +110,20 @@ impl SegTree {
             }
         }
     }
+    pub fn add(&mut self, mut pos: usize, val: i32) {
+        assert!(pos < self.n);
+        unsafe {
+            pos += self.n;
+            *self.s.get_unchecked_mut(pos) += val;
+            pos >>= 1;
+            while pos != 0 {
+                *self.s.get_unchecked_mut(pos) =
+                    *self.s.get_unchecked(pos * 2) + *self.s.get_unchecked(pos * 2 + 1);
+
+                pos >>= 1;
+            }
+        }
+    }
     pub fn query(&self, mut l: usize, mut r: usize) -> i32 {
         assert!(l < self.n);
         assert!(r < self.n);
