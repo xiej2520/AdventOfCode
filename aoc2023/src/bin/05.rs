@@ -38,14 +38,12 @@ impl Ord for RangeMap {
 
 fn merge<T: Ord>(mut intervals: Vec<(T, T)>) -> Vec<(T, T)> {
     intervals.sort_unstable();
-    let mut res = vec![];
+    let mut res: Vec<(T, T)> = vec![];
     for (l, r) in intervals {
         if !res.is_empty() {
-            let last: &mut (T, T) = res.last_mut().unwrap();
-            if l <= last.1 {
-                unsafe {
-                    // is this safe?
-                    *(&mut last.1 as *mut T) = max(std::ptr::read(&mut last.1 as *mut T), r);
+            if l <= (*res.last().unwrap()).1 {
+                if r > res.last().unwrap().1 {
+                    res.last_mut().unwrap().1 = r;
                 }
                 // res[-1][1] = max(res[-1][1], r[1])
             } else {
