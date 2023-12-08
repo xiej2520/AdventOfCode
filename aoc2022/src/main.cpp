@@ -14,5 +14,6 @@ int main(int argc, char **argv) {
   
   switch (sol_num) {
     case 16: solve_16(); break;
+    case 17: solve_17(); break;
   }
 }

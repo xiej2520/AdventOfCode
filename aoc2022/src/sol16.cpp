@@ -51,10 +51,10 @@ Valve TM has flow rate=0; tunnels lead to valves KF, AA
 
   int m = E.size();
 
-  auto solve_t = [&](int t) {
+  auto solve_t = [&](int t_max) {
     // dp[i][mask]: max pressure released at valve i after mask visited
     vector<vector<int>> dp(m, vector<int>(1 << m, 0));
-    // t remaining, released is total released (to 30 min) from visited
+    // t remaining, released is total released (to t min) from visited
     auto dfs = [&](auto &&rec, int i, int visited, int t, int released) -> void {
       for (int j=0; j<m; j++) {
         if (visited & (1 << j)) continue;
@@ -72,7 +72,7 @@ Valve TM has flow rate=0; tunnels lead to valves KF, AA
     int i = 0; // index of node with pos flow
     for (int j=0; j<n; j++) {
       if (flow_rate[j] != 0) {
-        int t_remain = t - D[AA_index][j] - 1;
+        int t_remain = t_max - D[AA_index][j] - 1;
         int released_i = t_remain * flow_pos[i];
         dp[i][1 << i] = released_i;
         dfs(dfs, i, 1 << i, t_remain, released_i);
