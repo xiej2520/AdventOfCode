@@ -7,6 +7,7 @@ default-run = "aoc2023"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+counter = "0.5.7"
 
 # main.rs
 once_cell = "1.18.0"
