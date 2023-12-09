@@ -30,13 +30,13 @@ pub fn main() {
         let Some(caps) = re.captures(&line) else {
             panic!()
         };
-        let i = (&caps[1])
+        let i = (caps[1])
             .chars()
             .fold(0, |acc, c| acc * 26 + c as usize - 'A' as usize);
-        l[i] = (&caps[2])
+        l[i] = (caps[2])
             .chars()
             .fold(0, |acc, c| acc * 26 + c as usize - 'A' as usize);
-        r[i] = (&caps[3])
+        r[i] = (caps[3])
             .chars()
             .fold(0, |acc, c| acc * 26 + c as usize - 'A' as usize);
     }
