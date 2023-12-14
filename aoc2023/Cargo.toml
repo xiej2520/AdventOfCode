@@ -7,8 +7,12 @@ default-run = "aoc2023"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+cached = { version = "0.46.1", features = ["ahash"] }
 counter = "0.5.7"
+memoize = "0.4.1"
 
 # main.rs
 once_cell = "1.18.0"
+rayon = "1.8.0"
 regex = "1.10.2"
+rustc-hash = "1.1.0"
