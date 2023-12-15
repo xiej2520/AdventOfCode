@@ -3,10 +3,7 @@
 #[allow(unused_variables)]
 use std::cmp::{max, min};
 
-use std::io::Read;
-
-
-// return Some(index of perfect reflection)
+// return Some(index of off-by-1 reflection)
 fn solve(nums: &[u32], width: u32) -> Option<u32> {
     'width: for i in 1..width {
         let mut diffs = 0;
@@ -34,8 +31,6 @@ pub fn run(input: &[u8]) -> u32 {
     while let Some(mut line) = iter.next() {
         let mut rows = [0; 17];
         let mut cols = [0; 17];
-        //rows = vec![];
-        //cols = vec![0; line.len()];
         let mut i = 0;
         let col_len = line.len();
         while !line.is_empty() {
@@ -65,8 +60,8 @@ pub fn run(input: &[u8]) -> u32 {
 
 pub fn main() {
     
-    let mut input = vec![];
-    std::io::stdin().lock().read_to_end(&mut input);
+    //let mut input = vec![];
+    //std::io::stdin().lock().read_to_end(&mut input);
 
-    println!("{}", run(&input));
+    //println!("{}", run(&input));
 }

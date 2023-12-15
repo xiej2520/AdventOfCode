@@ -104,7 +104,7 @@ pub fn main() {
     }
 
     let res_1: i64 = zip(&springs, &groups)
-        .map(|(springs, groups)| arrangements(&springs, &groups))
+        .map(|(springs, groups)| arrangements(springs, groups))
         .sum();
 
     let res_2: i64 = zip(&springs, &groups)
