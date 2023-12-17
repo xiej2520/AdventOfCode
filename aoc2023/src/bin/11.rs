@@ -43,13 +43,14 @@ pub fn main() {
 
     let mut empty_row_prefix = Vec::with_capacity(m);
     empty_row_prefix.push(empty_row[0] as usize);
-    for i in 1..m {
-        empty_row_prefix.push(*empty_row_prefix.last().unwrap() + empty_row[i] as usize);
+    for &is_empty_row in empty_row.iter().skip(1) {
+        empty_row_prefix.push(*empty_row_prefix.last().unwrap() + is_empty_row as usize);
     }
+
     let mut empty_col_prefix = Vec::with_capacity(n);
     empty_col_prefix.push(empty_col[0] as usize);
-    for i in 1..m {
-        empty_col_prefix.push(*empty_col_prefix.last().unwrap() + empty_col[i] as usize);
+    for &is_empty_col in empty_col.iter().skip(1) {
+        empty_col_prefix.push(*empty_col_prefix.last().unwrap() + is_empty_col as usize);
     }
 
     let mut gx = vec![];
