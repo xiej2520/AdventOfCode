@@ -6,8 +6,9 @@ use std::cmp::{max, min};
 use aoc2023::UnsafeScanner;
 use std::io::{stdin, stdout, BufWriter, Write};
 
+#[allow(non_snake_case)]
 fn HASH(s: &[u8]) -> usize {
-    s.iter().fold(0, |acc, &c| (acc + c as usize) * 17 & 0b11111111)
+    s.iter().fold(0, |acc, &c| ((acc + c as usize) * 17) & 0b11111111)
 }
 
 pub fn main() {
@@ -52,6 +53,9 @@ pub fn main() {
             }
         }
     }
+    // max size of a box is 6
+    // max size of all boxes is 280
+    // 1130 lenses in total
 
     let res_2: usize = boxes
         .iter()

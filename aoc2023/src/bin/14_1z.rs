@@ -204,15 +204,15 @@ fn calculate_load(platformz: &[Rock], m: u16, n: u16) -> i32 {
                 k += 1;
             }
         }
-        res += k as i32 * (m as i32 - i as i32);
+        res += k * (m as i32 - i as i32);
     }
     res
 }
 
 pub fn run(input: &[u8]) -> i32 {
-    let mut iter = input.split(|&b| b == b'\n');
+    let iter = input.split(|&b| b == b'\n');
     let mut platform = vec![];
-    while let Some(line) = iter.next() {
+    for line in iter {
         platform.push(line.iter().map(|&c| Rock::from(c)).collect::<Vec<_>>());
     }
     if let Some(l) = platform.last() {
@@ -221,9 +221,9 @@ pub fn run(input: &[u8]) -> i32 {
         }
     }
 
-    let M = platform.len() as u16;
-    let N = platform[0].len() as u16;
-    let zsize = unsafe { bmi2::index_of((M, N)) + 1 };
+    let m = platform.len() as u16;
+    let n = platform[0].len() as u16;
+    let zsize = unsafe { bmi2::index_of((m, n)) + 1 };
     let mut platform_z = vec![Empty; zsize as usize];
     for (i, row) in platform.iter().enumerate() {
         for (j, &e) in row.iter().enumerate() {
@@ -233,14 +233,14 @@ pub fn run(input: &[u8]) -> i32 {
     drop(platform);
 
     let mut i = 0;
-    let mut n = 1000000000;
+    let mut cycles_remaining = 1000000000;
     let mut seen = FxHashMap::default();
     let mut found = false;
-    while i < n {
-        tilt_north(&mut platform_z, M, N);
-        tilt_west(&mut platform_z, M, N);
-        tilt_south(&mut platform_z, M, N);
-        tilt_east(&mut platform_z, M, N);
+    while i < cycles_remaining {
+        tilt_north(&mut platform_z, m, n);
+        tilt_west(&mut platform_z, m, n);
+        tilt_south(&mut platform_z, m, n);
+        tilt_east(&mut platform_z, m, n);
 
         //for i in 0..M {
         //    for j in 0..N {
@@ -249,7 +249,7 @@ pub fn run(input: &[u8]) -> i32 {
         //    println!();
         //}
         if !found {
-            let mut repr = Vec::with_capacity((M * N) as usize);
+            let mut repr = Vec::with_capacity((m * n) as usize);
             let (mut c, mut k) = (0u64, 0);
             for &e in &platform_z {
                 match e {
@@ -272,9 +272,9 @@ pub fn run(input: &[u8]) -> i32 {
             repr.push(c);
             if let Some(prev) = seen.get(&repr) {
                 let cycle_len = i - prev;
-                let rem = n - i;
+                let rem = cycles_remaining - i;
                 let div = rem / cycle_len;
-                n -= div * cycle_len;
+                cycles_remaining -= div * cycle_len;
                 found = true;
             } else {
                 seen.insert(repr, i);
@@ -283,7 +283,7 @@ pub fn run(input: &[u8]) -> i32 {
         i += 1;
     }
 
-    calculate_load(&platform_z, M, N)
+    calculate_load(&platform_z, m, n)
 }
 
 pub fn main() {
@@ -353,6 +353,7 @@ pub fn coord_of_64(idx: u64) -> (u32, u32) {
     (x, y)
 }
 
+#[allow(clippy::missing_safety_doc)]
 #[cfg(target_arch = "x86_64")]
 pub mod bmi2 {
     #[inline]

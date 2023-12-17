@@ -112,11 +112,11 @@ fn tilt_south(platform: &mut [Vec<Rock>]) {
 
 fn tilt_west(platform: &mut [Vec<Rock>]) {
     let (m, n) = (platform.len(), platform[0].len());
-    for i in 0..m {
+    for row in platform {
         let mut j_empty = 0;
         let mut j_rock = 1;
         'j_empty_loop: while j_rock < m {
-            while platform[i][j_empty] != Empty {
+            while row[j_empty] != Empty {
                 j_empty += 1;
                 if j_empty >= n {
                     break 'j_empty_loop;
@@ -124,9 +124,9 @@ fn tilt_west(platform: &mut [Vec<Rock>]) {
             }
             j_rock = max(j_empty + 1, j_rock);
             while j_rock < m {
-                match platform[i][j_rock] {
+                match row[j_rock] {
                     Round => {
-                        (platform[i][j_empty], platform[i][j_rock]) = (Round, Empty);
+                        (row[j_empty], row[j_rock]) = (Round, Empty);
                         j_empty += 1;
                         j_rock += 1;
                         break;
@@ -144,12 +144,12 @@ fn tilt_west(platform: &mut [Vec<Rock>]) {
     }
 }
 fn tilt_east(platform: &mut [Vec<Rock>]) {
-    let (m, n) = (platform.len(), platform[0].len());
-    for i in 0..m {
+    let n = platform[0].len();
+    for row in platform {
         let mut j_empty = n - 1;
         let mut j_rock = n - 2;
         'j_empty_loop: loop {
-            while platform[i][j_empty] != Empty {
+            while row[j_empty] != Empty {
                 if j_empty <= 1 {
                     break 'j_empty_loop;
                 }
@@ -157,9 +157,9 @@ fn tilt_east(platform: &mut [Vec<Rock>]) {
             }
             j_rock = min(j_empty - 1, j_rock);
             loop {
-                match platform[i][j_rock] {
+                match row[j_rock] {
                     Round => {
-                        (platform[i][j_empty], platform[i][j_rock]) = (Round, Empty);
+                        (row[j_empty], row[j_rock]) = (Round, Empty);
                         if j_rock == 0 {
                             break 'j_empty_loop;
                         }
@@ -196,9 +196,9 @@ fn calculate_load(platform: &[Vec<Rock>]) -> i32 {
 }
 
 pub fn run(input: &[u8]) -> i32 {
-    let mut iter = input.split(|&b| b == b'\n');
+    let iter = input.split(|&b| b == b'\n');
     let mut platform = vec![];
-    while let Some(line) = iter.next() {
+    for line in iter {
         platform.push(line.iter().map(|&c| Rock::from(c)).collect::<Vec<_>>());
     }
     if let Some(l) = platform.last() {
