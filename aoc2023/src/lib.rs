@@ -147,13 +147,16 @@ impl SegTree {
 }
 
 pub fn gcd(a: i64, b: i64) -> i64 {
-    if b == 0 { a } else { gcd(b, a % b) }
+    if b == 0 {
+        a
+    } else {
+        gcd(b, a % b)
+    }
 }
 pub fn egcd(a: i64, b: i64) -> (i64, i64, i64) {
     if a == 0 {
         (b, 0, 1)
-    }
-    else {
+    } else {
         let (g, x, y) = egcd(b % a, a);
         (g, y - (b / a) * x, x)
     }
@@ -163,19 +166,26 @@ pub fn lcm(a: i64, b: i64) -> i64 {
 }
 pub fn mod_inv(a: i64, m: i64) -> Option<i64> {
     let (g, x, _) = egcd(a, m);
-    if g != 1 { None } else { Some((x % m + m) % m) }
+    if g != 1 {
+        None
+    } else {
+        Some((x % m + m) % m)
+    }
 }
 
 // returns solution x to system of congruences x \equiv a_i \mod m_i
 pub fn crt(congruences: &[(i64, i64)]) -> i64 {
     let prod_m: i64 = congruences.iter().map(|c| c.1).product();
-    
+
     congruences.iter().fold(0, |acc, &(a, m)| {
         let m_i = prod_m / m;
         let n_i = mod_inv(m_i, m).unwrap();
         (acc + a * m_i % prod_m * n_i) % prod_m
     })
 }
+
+mod grid;
+pub use crate::grid::*;
 
 #[cfg(test)]
 mod tests {
