@@ -1,0 +1,89 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=2cm]{geometry}
+%
+\usepackage{parskip}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+%
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue, 
+    urlcolor=blue,
+}
+
+\newcommand*\mat[1]{\begin{bmatrix}#1\end{bmatrix}}
+
+\begin{document}
+
+Solution from \href{https://old.reddit.com/r/adventofcode/comments/18pnycy/2023_day_24_solutions/kepu26z/}{evouga}
+
+Let the rock's initial position be $P=(x,y,z)$ and velocity be $V=(u,v,w)$.
+
+Let hailstone $i$'s initial position be $P_i=(x_i,y_i,z_i)$ and initial velocity
+be $V_i=(u_i,v_i,z_i)$.
+
+Let the rock collide with hailstone $i$ at time $t_i$.
+
+We get
+\begin{align*}
+P+Vt_i &= P_i+V_it_i\\
+P-P_i &= (V-V_i)t_i\\
+0 &= (P-P_i)\times(V-V_i) \tag{parallel vectors have cross product 0}\\
+\end{align*}
+
+\begin{align*}
+(P\times V)-(P\times V_i)-(P_i\times V)+(P_i\times V_i) &= 0\\
+\mat{yw-zv\\zu-xz\\xv-yu} - \mat{yw_i-zv_i\\zu_i-xw_i\\xv_i-yu_i}
+-\mat{y_iw-z_iv\\z_iu-x_iw\\x_iv-y_iu} +\mat{y_iw_i-z_iv_i\\z_iu_i-x_iw_i\\x_iv_i-y_iu_i} = 0\\
+-\mat{yw_i-zv_i\\zu_i-xw_i\\xv_i-yu_i}-\mat{y_iw-z_iv\\z_iu-x_iw\\x_iv-y_iu} +\mat{y_iw_i-z_iv_i\\z_iu_i-x_iw_i\\x_iv_i-y_iu_i} =
+\mat{yw-zv\\zu-xz\\xv-yu}
+\end{align*}
+
+The $P\times V$ term is the same for each rock. If we equate the LHS for two rocks, we get
+
+\begin{align*}
+\mat{yw_i-zv_i\\zu_i-xw_i\\xv_i-yu_i}+\mat{y_iw-z_iv\\z_iu-x_iw\\x_iv-y_iu}-\mat{y_iw_i-z_iv_i\\z_iu_i-x_iw_i\\x_iv_i-y_iu_i}=
+\mat{yw_j-zv_j\\zu_j-xw_j\\xv_j-yu_j}+\mat{y_jw-z_jv\\z_ju-x_jw\\x_jv-y_ju}-\mat{y_jw_j-z_jv_j\\z_ju_j-x_jw_j\\x_jv_j-y_ju_j}\\
+\end{align*}
+
+which turns into a linear system:
+\begin{align*}
+\mat{
+0 & w_i-w_j & -v_i+v_j & 0 & -z_i+z_j & y_i-y_j\\
+-w_i+w_j & 0 & u_i-u_j & z_i-z_j & 0 & -x_i+x_j\\
+v_i-v_j & -u_i+u_j & 0 & -y_i+y_j & x_i-x_j & 0\\
+}
+\mat{x\\y\\z\\u\\v\\w}=
+\mat{
+y_iw_i-z_iv_i-y_jw_j+z_jv_j\\
+z_iu_i-x_iw_i-z_ju_j+x_jw_j\\
+x_iv_i-y_iu_i-x_jv_j+y_ju_j\\
+}
+\end{align*}
+
+Using two pairs of rocks, we can solve the system
+\begin{align*}
+\mat{
+0 & w_1-w_2 & -v_1+v_2 & 0 & -z_1+z_2 & y_1-y_2\\
+-w_1+w_2 & 0 & u_1-u_2 & z_1-z_2 & 0 & -x_1+x_2\\
+v_1-v_2 & -u_1+u_2 & 0 & -y_1+y_2 & x_1-x_2 & 0\\
+0 & w_1-w_3 & -v_1+v_3 & 0 & -z_1+z_3 & y_1-y_3\\
+-w_1+w_3 & 0 & u_1-u_3 & z_1-z_3 & 0 & -x_1+x_3\\
+v_1-v_3 & -u_1+u_3 & 0 & -y_1+y_3 & x_1-x_3 & 0\\
+}
+\mat{x\\y\\z\\u\\v\\w}=
+\mat{
+y_1w_1-z_1v_1-y_2w_2+z_2v_2\\
+z_1u_1-x_1w_1-z_2u_2+x_2w_2\\
+x_1v_1-y_1u_1-x_2v_2+y_2u_2\\
+y_1w_1-z_1v_1-y_3w_3+z_3v_3\\
+z_1u_1-x_1w_1-z_3u_3+x_3w_3\\
+x_1v_1-y_1u_1-x_3v_3+y_3u_3\\
+}
+\end{align*}
+to get our answer.
+
+\end{document}

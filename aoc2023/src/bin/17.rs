@@ -3,8 +3,7 @@
 #[allow(unused_variables)]
 use std::cmp::{max, min};
 
-use aoc2023::UnsafeScanner;
-use rustc_hash::{FxHashMap, FxHasher};
+use aoc2023::{UnsafeScanner, Grid};
 use std::{
     collections::BinaryHeap,
     io::{stdin, stdout, BufWriter, Write},
@@ -13,10 +12,10 @@ use std::{
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 enum Dir {
-    Left = 0b0001,
-    Right = 0b0010,
-    Up = 0b0100,
-    Down = 0b1000,
+    Left = 0,
+    Right = 1,
+    Up = 2,
+    Down = 3,
 }
 use Dir::*;
 
@@ -26,104 +25,182 @@ pub fn main() {
 
     let mut grid = vec![];
     while let Some(line) = scan.read_line() {
-        grid.push(line.into_bytes());
+        grid.push(line.into_bytes().iter().map(|&c| c - b'0').collect::<Vec<_>>());
     }
     let (m, n) = (grid.len(), grid[0].len());
-    let mut dp = FxHashMap::default();
+    
+    // grid[i][j][dir][rem]
+    let mut visited = Grid::duplicate([[i16::MIN; 3]; 4], m, n);
 
     let mut pq = BinaryHeap::new();
-    pq.push((-((grid[0][1] - b'0') as i32), 0, 1, Right, 2));
-    pq.push((-((grid[1][0] - b'0') as i32), 1, 0, Down, 2));
+    pq.push((-(grid[0][1] as i16), 0, 1, Right, 2));
+    pq.push((-(grid[1][0] as i16), 1, 0, Down, 2));
 
     while !pq.is_empty() {
         let (cost, i, j, d, rem) = pq.pop().unwrap();
-        if let Some(_) = dp.get(&(i, j, d, rem)) {
+        if visited[(i, j)][d as usize][rem] > i16::MIN {
             continue;
         }
-        dp.insert((i, j, d, rem), cost);
+        visited[(i, j)][d as usize][rem] = cost;
+        if i == m-1 && j == n-1 {
+            break;
+        }
+
+        let mut try_move = |dir, i: usize, j, rem| {
+            match dir {
+                Left => {
+                    if j > 0 {
+                        pq.push((cost - grid[i][j-1] as i16, i, j-1, Left, rem));
+                    }
+                },
+                Right => {
+                    if j < n - 1 {
+                        pq.push((cost - grid[i][j+1] as i16, i, j+1, Right, rem));
+                    }
+                },
+                Up => {
+                    if i > 0 {
+                        pq.push((cost - grid[i-1][j] as i16, i-1, j, Up, rem));
+                    }
+                },
+                Down => {
+                    if i < m - 1 {
+                        pq.push((cost - grid[i+1][j] as i16, i+1, j, Down, rem));
+                    }
+                }
+            }
+        };
 
         match d {
             Left => {
-                if j > 0 && rem > 0 {
-                    pq.push((
-                        cost - (grid[i][j - 1] - b'0') as i32,
-                        i,
-                        j - 1,
-                        Left,
-                        rem - 1,
-                    ));
+                if rem > 0 {
+                    try_move(Left, i, j, rem - 1);
                 }
-                if i > 0 {
-                    pq.push((cost - (grid[i - 1][j] - b'0') as i32, i - 1, j, Up, 2));
+                try_move(Up, i, j, 2);
+                try_move(Down, i, j, 2);
+            }
+            Right => {
+                if rem > 0 {
+                    try_move(Right, i, j, rem - 1);
                 }
-                if i < m - 1 {
-                    pq.push((cost - (grid[i + 1][j] - b'0') as i32, i + 1, j, Down, 2));
+                try_move(Up, i, j, 2);
+                try_move(Down, i, j, 2);
+            }
+            Up => {
+                if rem > 0 {
+                    try_move(Up, i, j, rem - 1);
+                }
+                try_move(Left, i, j, 2);
+                try_move(Right, i, j, 2);
+            }
+            Down => {
+                if rem > 0 {
+                    try_move(Down, i, j, rem - 1);
+                }
+                try_move(Left, i, j, 2);
+                try_move(Right, i, j, 2);
+            }
+        }
+    }
+
+    let mut res_1 = i16::MIN;
+    for dir in 0..4 {
+        for rem in 0..3 {
+            res_1 = max(res_1, visited[(m-1, n-1)][dir][rem]);
+        }
+    }
+    res_1 = -res_1;
+
+    let mut visited = Grid::duplicate([[i16::MIN; 10]; 4], m, n);
+
+    let mut pq = BinaryHeap::new();
+    pq.push((-(grid[0][1] as i16), 0, 1, Right, 9));
+    pq.push((-(grid[1][0] as i16), 1, 0, Down, 9));
+
+    while !pq.is_empty() {
+        let (cost, i, j, d, rem) = pq.pop().unwrap();
+        if visited[(i, j)][d as usize][rem] > i16::MIN {
+            continue;
+        }
+        visited[(i, j)][d as usize][rem] = cost;
+        if i == m-1 && j == n-1  && rem <= 6{
+            break;
+        }
+
+        let mut try_move = |dir, i: usize, j, rem| {
+            match dir {
+                Left => {
+                    if j > 0 {
+                        pq.push((cost - grid[i][j-1] as i16, i, j-1, Left, rem));
+                    }
+                },
+                Right => {
+                    if j < n - 1 {
+                        pq.push((cost - grid[i][j+1] as i16, i, j+1, Right, rem));
+                    }
+                },
+                Up => {
+                    if i > 0 {
+                        pq.push((cost - grid[i-1][j] as i16, i-1, j, Up, rem));
+                    }
+                },
+                Down => {
+                    if i < m - 1 {
+                        pq.push((cost - grid[i+1][j] as i16, i+1, j, Down, rem));
+                    }
+                }
+            }
+        };
+
+        match d {
+            Left => {
+                if rem > 0 {
+                    try_move(Left, i, j, rem - 1);
+                }
+                // 4 steps taken at 6 and below
+                if rem <= 6 {
+                    try_move(Up, i, j, 9);
+                    try_move(Down, i, j, 9);
                 }
             }
             Right => {
-                if j < n - 1 && rem > 0 {
-                    pq.push((
-                        cost - (grid[i][j + 1] - b'0') as i32,
-                        i,
-                        j + 1,
-                        Right,
-                        rem - 1,
-                    ));
+                if rem > 0 {
+                    try_move(Right, i, j, rem - 1);
                 }
-                if i > 0 {
-                    pq.push((cost - (grid[i - 1][j] - b'0') as i32, i - 1, j, Up, 2));
-                }
-                if i < m - 1 {
-                    pq.push((cost - (grid[i + 1][j] - b'0') as i32, i + 1, j, Down, 2));
+                if rem <= 6 {
+                    try_move(Up, i, j, 9);
+                    try_move(Down, i, j, 9);
                 }
             }
             Up => {
-                if i > 0 && rem > 0 {
-                    pq.push((cost - (grid[i - 1][j] - b'0') as i32, i - 1, j, Up, rem - 1));
+                if rem > 0 {
+                    try_move(Up, i, j, rem - 1);
                 }
-                if j > 0 {
-                    pq.push((cost - (grid[i][j - 1] - b'0') as i32, i, j - 1, Left, 2));
-                }
-                if j < n - 1 {
-                    pq.push((cost - (grid[i][j + 1] - b'0') as i32, i, j + 1, Right, 2));
+                if rem <= 6 {
+                    try_move(Left, i, j, 9);
+                    try_move(Right, i, j, 9);
                 }
             }
             Down => {
-                if i < m - 1 && rem > 0 {
-                    pq.push((
-                        cost - (grid[i + 1][j] - b'0') as i32,
-                        i + 1,
-                        j,
-                        Down,
-                        rem - 1,
-                    ));
+                if rem > 0 {
+                    try_move(Down, i, j, rem - 1);
                 }
-                if j > 0 {
-                    pq.push((cost - (grid[i][j - 1] - b'0') as i32, i, j - 1, Left, 2));
-                }
-                if j < n - 1 {
-                    pq.push((cost - (grid[i][j + 1] - b'0') as i32, i, j + 1, Right, 2));
+                if rem <= 6 {
+                    try_move(Left, i, j, 9);
+                    try_move(Right, i, j, 9);
                 }
             }
         }
     }
 
-    let mut res_1 = i32::MAX;
-    for rem in 0..=2 {
-        if let Some(r) = dp.get(&(m - 1, n - 1, Left, rem)) {
-            res_1 = min(res_1, -r);
-        }
-        if let Some(r) = dp.get(&(m - 1, n - 1, Right, rem)) {
-            res_1 = min(res_1, -r);
-        }
-        if let Some(r) = dp.get(&(m - 1, n - 1, Up, rem)) {
-            res_1 = min(res_1, -r);
-        }
-        if let Some(r) = dp.get(&(m - 1, n - 1, Down, rem)) {
-            res_1 = min(res_1, -r);
+    let mut res_2 = i16::MIN;
+    for dir in 0..4 {
+        for rem in 0..=6 {
+            res_2 = max(res_2, visited[(m-1, n-1)][dir][rem]);
         }
     }
-    let res_2 = 0;
+    res_2 = -res_2;
+
 
     write!(out, "{}\n{}\n", res_1, res_2);
 }
