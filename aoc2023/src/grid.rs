@@ -12,8 +12,8 @@ impl<T> Grid<T> {
     pub fn new(width: usize) -> Self {
         Grid {
             grid: vec![],
-            m: width,
-            n: 0,
+            m: 0,
+            n: width,
         }
     }
     pub fn from_2d(grid2d: Vec<Vec<T>>) -> Self {
@@ -26,8 +26,19 @@ impl<T> Grid<T> {
         }
     }
     pub fn push_row(&mut self, row: Vec<T>) {
-        debug_assert!(self.m == row.len());
+        debug_assert!(self.n == row.len());
         self.grid.extend(row);
+        self.m += 1;
+    }
+    pub fn duplicate(e: T, width: usize, height: usize) -> Self
+    where
+        T: Copy,
+    {
+        Grid {
+            grid: vec![e; width * height],
+            m: width,
+            n: height,
+        }
     }
 
     pub fn m(&self) -> usize {
@@ -44,7 +55,7 @@ impl std::fmt::Display for Grid<u8> {
             unsafe {
                 write!(
                     f,
-                    "{}\n",
+                    "{}",
                     std::str::from_utf8_unchecked(&self.grid[i * self.m..i * (self.m + 1)])
                 )?
             }
@@ -58,7 +69,7 @@ impl<T> Index<(usize, usize)> for Grid<T> {
 
     fn index(&self, index: (usize, usize)) -> &Self::Output {
         debug_assert!(index.0 < self.m && index.1 < self.n);
-        unsafe { self.grid.get_unchecked(self.m * index.0 + index.1) }
+        unsafe { self.grid.get_unchecked(self.n * index.0 + index.1) }
     }
 }
 impl<T> Index<[usize; 2]> for Grid<T> {
@@ -66,21 +77,21 @@ impl<T> Index<[usize; 2]> for Grid<T> {
 
     fn index(&self, index: [usize; 2]) -> &Self::Output {
         debug_assert!(index[0] < self.m && index[1] < self.n);
-        unsafe { self.grid.get_unchecked(self.m * index[0] + index[1]) }
+        unsafe { self.grid.get_unchecked(self.n * index[0] + index[1]) }
     }
 }
 
 impl<T> IndexMut<(usize, usize)> for Grid<T> {
     fn index_mut(&mut self, index: (usize, usize)) -> &mut Self::Output {
         debug_assert!(index.0 < self.m && index.1 < self.n);
-        unsafe { self.grid.get_unchecked_mut(self.m * index.0 + index.1) }
+        unsafe { self.grid.get_unchecked_mut(self.n * index.0 + index.1) }
     }
 }
 
 impl<T> IndexMut<[usize; 2]> for Grid<T> {
     fn index_mut(&mut self, index: [usize; 2]) -> &mut Self::Output {
         debug_assert!(index[0] < self.m && index[1] < self.n);
-        unsafe { self.grid.get_unchecked_mut(self.m * index[0] + index[1]) }
+        unsafe { self.grid.get_unchecked_mut(self.n * index[0] + index[1]) }
     }
 }
 
@@ -105,7 +116,7 @@ impl<'a, T> Iterator for GridRowIter<'a, T> {
         if self.i < self.grid_ref.m {
             self.i += 1;
 
-            Some(&self.grid_ref.grid[self.i * self.grid_ref.m..self.i * (self.grid_ref.m + 1)])
+            Some(&self.grid_ref.grid[(self.i - 1) * self.grid_ref.n..self.i * self.grid_ref.n])
         } else {
             None
         }

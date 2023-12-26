@@ -184,6 +184,46 @@ pub fn crt(congruences: &[(i64, i64)]) -> i64 {
     })
 }
 
+#[allow(unused)]
+#[derive(Debug, Clone)]
+pub struct DSU {
+    pub parent: Vec<usize>,
+    pub rank: Vec<u32>,
+    pub n: usize,
+}
+
+#[allow(unused)]
+impl DSU {
+    pub fn new(n: usize) -> DSU {
+        DSU {
+            parent: (0..n).collect(),
+            rank: vec![0; n],
+            n
+        }
+    }
+    pub fn find(&mut self, i: usize) -> usize {
+        while self.parent[self.parent[i]] != self.parent[i] {
+            self.parent[i] = self.parent[self.parent[i]];
+        }
+        self.parent[i]
+    }
+    pub fn union(&mut self, mut a: usize, mut b: usize) -> bool {
+        a = self.find(a);
+        b = self.find(b);
+        if a == b {
+            return false;
+        }
+        if self.rank[a] < self.rank[b] {
+            std::mem::swap(&mut a, &mut b);
+        }
+        self.parent[b] = a;
+        if self.rank[a] == self.rank[b] {
+            self.rank[a] += 1;
+        }
+        true
+    }
+}
+
 mod grid;
 pub use crate::grid::*;
 
