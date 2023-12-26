@@ -305,19 +305,19 @@ pub fn main() {
         }
     }
 
-    grid_status.iter().for_each(|r| {
-        println!(
-            "{}",
-            r.iter().map(|t| t.to_string()).collect::<Vec<_>>().join("")
-        )
-    });
-    
-    println!();
-    
-    grid_3.iter().for_each(|r| {
-        println!(
-            "{}",
-            r.iter().map(|t| t.to_string()).collect::<Vec<_>>().join("")
-        )
-    });
+    //grid_status.iter().for_each(|r| {
+    //    println!(
+    //        "{}",
+    //        r.iter().map(|t| t.to_string()).collect::<Vec<_>>().join("")
+    //    )
+    //});
+    //
+    //println!();
+    //
+    //grid_3.iter().for_each(|r| {
+    //    println!(
+    //        "{}",
+    //        r.iter().map(|t| t.to_string()).collect::<Vec<_>>().join("")
+    //    )
+    //});
 }

@@ -82,7 +82,7 @@ fn gauss(mut A: Grid<BigDecimal>) -> Vec<BigDecimal> {
         if A[(i,i)].abs() < BigDecimal::from_f64(0.000000001).unwrap() {
             for l in i+1..m {
                 if !A[(l,i)].is_zero() {
-                    println!("Swapping rows {} and {}",i,l);
+                    //println!("Swapping rows {} and {}",i,l);
                     for j in i..m+1 {
                         let t = A[(i,j)].clone();
                         A[(i, j)] = std::mem::replace(&mut A[(l, j)], t);
@@ -99,22 +99,22 @@ fn gauss(mut A: Grid<BigDecimal>) -> Vec<BigDecimal> {
             if A[(i,i)].is_zero() {
                 continue;
             }
-            println!("{} {}",i,j);
+            //println!("{} {}",i,j);
             let f = &A[(j+1,i)] / &A[(i,i)];
             for k in i..m+1 {
                 let t = &f * &A[(i,k)];
                 A[(j+1,k)] -= t;
             }
         }
-    for (i,row) in A.iter().enumerate() {
-        print!("{}: ",i);
-        row.iter().for_each(|d| print!("{:.8}, ", d));
-        println!();
-        //println!("{:?}", row);
+    //for (i,row) in A.iter().enumerate() {
+    //    print!("{}: ",i);
+    //    row.iter().for_each(|d| print!("{:.8}, ", d));
+    //    println!();
+    //    //println!("{:?}", row);
+    //}
+    //println!();
     }
-    println!();
-    }
-    println!("row echelon");
+    //println!("row echelon");
     
     for i in (1..m).rev() {
         if A[(i,i)].is_zero() {
@@ -124,34 +124,34 @@ fn gauss(mut A: Grid<BigDecimal>) -> Vec<BigDecimal> {
             continue;
         }
         for j in (1..i+1).rev() {
-            println!("{} {}",i,j);
+            //println!("{} {}",i,j);
             let f = &A[(j-1,i)] / &A[(i,i)];
             for k in (0..m+1).rev() {
                 let t = &f * &A[(i,k)];
                 A[(j-1,k)] -= t;
             }
         }
-    for (i,row) in A.iter().enumerate() {
-        print!("{}: ",i);
-        row.iter().for_each(|d| print!("{:.8}, ", d));
-        println!();
-        //println!("{:?}", row);
-    }
-    println!();
+    //for (i,row) in A.iter().enumerate() {
+    //    print!("{}: ",i);
+    //    row.iter().for_each(|d| print!("{:.8}, ", d));
+    //    println!();
+    //    //println!("{:?}", row);
+    //}
+    //println!();
     }
 
     let mut res = vec![];
     
-    println!();
-    println!();
-    for (i,row) in A.iter().enumerate() {
-        print!("{}: ",i);
-        row.iter().for_each(|d| print!("{:.8}, ", d));
-        println!();
-        //println!("{:?}", row);
-    }
-    println!();
-    println!();
+    //println!();
+    //println!();
+    //for (i,row) in A.iter().enumerate() {
+    //    print!("{}: ",i);
+    //    row.iter().for_each(|d| print!("{:.8}, ", d));
+    //    println!();
+    //    //println!("{:?}", row);
+    //}
+    //println!();
+    //println!();
     for i in 0..m {
         res.push(&A[(i, m)] / &A[(i, i)]);
     }
@@ -274,13 +274,13 @@ pub fn main() {
         ],
     ];
     let A = Grid::from_2d(M);
-    for row in A.iter() {
-        println!("  {:?}",row);
-    }
+    //for row in A.iter() {
+    //    println!("  {:?}",row);
+    //}
     
-    std::env::set_var("RUST_BACKTRACE", "1");
+    //std::env::set_var("RUST_BACKTRACE", "1");
     let res = gauss(A);
-    println!("{:?}",res);
+    //println!("{:?}",res);
     let res_2 = &res[0] + &res[1] + &res[2];
 
 

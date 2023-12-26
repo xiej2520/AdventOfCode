@@ -23,3 +23,7 @@ cargo run --release --bin DAY
 cargo run --release --bin DAY < inputs/DAY.in
 cargo run --release # run all days
 ```
+
+Goal was to run all days in under 1 second, currently achieving 2.2s, however
+each program seems to have a 55ms startup time, so I guess it's achieved?
+2200-55*25=825.
