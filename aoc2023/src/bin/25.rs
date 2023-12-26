@@ -9,6 +9,9 @@ use rand::seq::SliceRandom;
 use rustc_hash::FxHashMap;
 use std::io::{stdin, stdout, BufWriter, Write};
 
+// try Stoer-Wagner later
+// https://github.com/kth-competitive-programming/kactl/blob/main/content/graph/GlobalMinCut.h
+
 fn karger(n: usize, edges: &Vec<(usize, usize)>) -> (DSU, usize) {
     fn trial(n: usize, edges: &Vec<(usize, usize)>) -> (DSU, usize) {
         let mut comps = n;
