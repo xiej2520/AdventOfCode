@@ -12,7 +12,9 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 add_compile_options("-Wall" "-Wextra" "-Wpedantic" "-Werror" "-Wdouble-promotion"
         # "$<$<CONFIG:Debug>:-gdwarf-4>"
-        "$<$<CONFIG:Release>:-O3>")
+        "$<$<CONFIG:Release>:-O3>"
+        )
+add_compile_options("-fbracket-depth=16384")
 #set(CMAKE_CXX_FLAGS_DEBUG "-g3 -fsanitize=address,undefined,leak -fsanitize-undefined-trap-on-error")
 #add_compile_options("$<$<CONFIG:Debug>:-g3>" "-fdiagnostics-format=clang" "-ftemplate-backtrace-limit=1024" "-ftemplate-backtrace-limit=32")
 

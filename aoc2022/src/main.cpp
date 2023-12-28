@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
   cin.rdbuf(in.rdbuf());
   
   switch (sol_num) {
+    case  1: solve_1();  break;
     case 16: solve_16(); break;
     case 17: solve_17(); break;
   }

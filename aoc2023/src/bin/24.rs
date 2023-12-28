@@ -74,18 +74,23 @@ fn proj(a: Coord3) -> Coord2f {
 }
 
 // augmented matrix A
+// must have one solution, otherwise will divide by zero or give wrong answer
 fn gauss(mut A: Grid<BigDecimal>) -> Vec<BigDecimal> {
     debug_assert_eq!(A.m() + 1, A.n());
     let m = A.m();
     
+    // transform into row echelon form
     for i in 0..m-1 {
+        // row swap
         if A[(i,i)].abs() < BigDecimal::from_f64(0.000000001).unwrap() {
             for l in i+1..m {
                 if !A[(l,i)].is_zero() {
                     //println!("Swapping rows {} and {}",i,l);
                     for j in i..m+1 {
-                        let t = A[(i,j)].clone();
-                        A[(i, j)] = std::mem::replace(&mut A[(l, j)], t);
+                        unsafe {
+                            debug_assert_ne!(l, i);
+                            std::ptr::swap(&mut A[(i, j)], &mut A[(l, j)]);
+                        }
                     }
                     break;
                 }
@@ -120,7 +125,7 @@ fn gauss(mut A: Grid<BigDecimal>) -> Vec<BigDecimal> {
         if A[(i,i)].is_zero() {
             continue;
         }
-        if A[(i,i)].abs() < BigDecimal::from_f64(0.000000001).unwrap() {
+        if A[(i,i)].abs() < BigDecimal::from_f64(1e-15).unwrap() {
             continue;
         }
         for j in (1..i+1).rev() {
@@ -236,23 +241,6 @@ pub fn main() {
     let w3 = BigDecimal::from(w3);
     
     let Z = BigDecimal::zero();
-    //let M = vec![
-    //    vec![Z.clone(), &w1-&w2, -&v1+&v2, Z.clone(), -&z1+&z2, &y1-&y2],
-    //    vec![-&w1+&w2, Z.clone(), &u1-&u2, &z1-&z2, Z.clone(), -&x1+&x2],
-    //    vec![&v1-&v2, -&u1+&u2, Z.clone(), -&y1+&y2, &x1-&x2, Z.clone()],
-    //    vec![Z.clone(), &w1-&w3, -&v1+&v3, Z.clone(), -&z1+&z3, &y1-&y3],
-    //    vec![-&w1+&w3, Z.clone(), &u1-&u3, &z1-&z3, Z.clone(), -&x1+&x3],
-    //    vec![&v1-&v3, -&u1+&u3, Z.clone(), -&y1+&y3, &x1-&x3, Z.clone()],
-    //];
-    //let A = Grid::from_2d(M);
-    //let b = vec![
-    //    &y1*&w1 + &z1*&v1 - &y2*&w2 + &z2*&v2,
-    //    &z1*&u1 - &x1*&w1 - &z2*&u2 + &x2*&w2,
-    //    &x1*&v1 - &y1*&u1 - &x2*&v2 + &y2*&u2,
-    //    &y1*&w1 + &z1*&v1 - &y3*&w3 + &z3*&v3,
-    //    &z1*&u1 - &x1*&w1 - &z3*&u3 + &x3*&w3,
-    //    &x1*&v1 - &y1*&u1 - &x3*&v3 + &y3*&u3,
-    //];
     let M = vec![
         vec![Z.clone(), &w1-&w2, -&v1+&v2, Z.clone(), -&z1+&z2, &y1-&y2,
         &y1*&w1 - &z1*&v1 - &y2*&w2 + &z2*&v2,

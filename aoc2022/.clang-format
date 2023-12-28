@@ -1,0 +1,5 @@
+IndentWidth: 2
+InsertBraces: true
+AlignAfterOpenBracket: BlockIndent
+IndentCaseLabels: false
+AlwaysBreakTemplateDeclarations: Yes
