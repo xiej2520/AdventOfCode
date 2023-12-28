@@ -62,7 +62,7 @@ unsafe fn dfs(
 }
 // 0.25s with iterate checks (no next)
 // 0.25s with next precalculated
-fn arrangements<'a>(springs: &'a [u8], groups: &'a [usize]) -> i64 {
+fn arrangements(springs: &[u8], groups: &[usize]) -> i64 {
     let mut res = 0;
     let mut dp = FxHashMap::default();
     for (i, &c) in springs.iter().enumerate() {
