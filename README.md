@@ -12,7 +12,9 @@ build/aoc2022 DAY
 build/aoc2022 DAY INPUT
 ```
 
-### 2023 - Rust
+### 2023 - Rust/Python
+
+Solved in Python first for leaderboard, `src/py`.
 
 ```bash
 cargo run --release --bin DAY
@@ -30,5 +32,6 @@ each program seems to have a 55ms startup time, so I guess it's achieved?
 
 1. LLVM IR
 ```bash
-clear; ./build.sh 1; strace ./target/1 < input/1.in 2> target/1.txt
+clear; ./build.sh 1 -no-lib; strace ./target/1 < input/1.in 2> target/1.txt
+clear; ./build.sh 2; strace ./target/2 < input/2.in 2> target/2.txt
 ```
